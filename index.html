@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Muscle Mix</title>
+<style>
+:root{--bg:#0b0b0b;--panel:#161616;--line:#2b2b2b;--gold:#e0b04a;--gold-d:#b88a2a;--text:#f3ede0;--mute:#b9b09c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+#app{position:relative;width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+@media (min-width:500px){#app{height:min(100dvh,880px);margin-top:max(0px,calc((100dvh - 880px)/2));border:1px solid var(--line);border-radius:28px}}
+header.top{padding:calc(16px + env(safe-area-inset-top)) 20px 12px;border-bottom:1px solid var(--line);flex:none}
+header.top h1{margin:0;font-size:26px;letter-spacing:.5px;color:var(--gold);font-weight:800}
+main{position:relative;flex:1;min-height:0}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:20px 20px 28px;display:none}
+.screen.on{display:block}
+h2{font-size:24px;color:var(--gold);margin:0 0 14px;line-height:1.2}
+.section-label{font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 14px}
+p{font-size:18px;line-height:1.45;margin:0 0 12px}
+.rule{background:var(--panel);border:1px solid var(--gold-d);border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.rule p{margin:0 0 8px}
+.ph{border:2px dashed #8a7a55;border-radius:10px;padding:10px 12px;color:#cdbf98;background:rgba(224,176,74,.06);font-size:15px;line-height:1.35;font-style:italic}
+.row{display:flex;gap:14px;align-items:center;width:100%;min-height:92px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px;color:var(--text);font:inherit;cursor:pointer}
+.row:active{border-color:var(--gold)}
+.thumb{flex:none;width:72px;height:72px;border-radius:12px;background:repeating-linear-gradient(45deg,#242424,#242424 8px,#1c1c1c 8px,#1c1c1c 16px);border:1px solid #3a3a3a;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mute)}
+.row .info{flex:1;min-width:0}
+.row .num{color:var(--gold);font-weight:800;font-size:15px}
+.row .name{font-size:20px;font-weight:700;line-height:1.2}
+.row .ph{margin-top:6px;padding:4px 8px;font-size:13px}
+.chev{flex:none;color:var(--gold);font-size:26px;padding-right:4px}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:20px}
+.seg button{flex:1;min-height:60px;border:0;border-radius:10px;background:transparent;color:var(--mute);font:inherit;font-size:16px;line-height:1.15;padding:4px 6px;font-weight:700;cursor:pointer}
+.seg button.on{background:var(--gold);color:#0b0b0b}
+.group h3{font-size:20px;color:var(--gold);margin:20px 0 10px;text-transform:uppercase;letter-spacing:1.5px}
+.group .row{min-height:72px}
+.group .row .name{font-size:20px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.q h3{margin:0 0 8px;font-size:21px;line-height:1.25;color:var(--gold)}
+.q p{margin:0 0 10px}
+.link{display:flex;align-items:center;justify-content:center;min-height:52px;width:100%;border:2px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font:inherit;font-size:17px;font-weight:700;cursor:pointer;margin-top:6px}
+.link{text-decoration:none}
+.swapbtn{display:block;min-height:48px;margin:-4px 0 12px auto;padding:0 22px;border:2px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.swapbtn.on{background:var(--gold);color:#0b0b0b}
+.swappanel{display:none;margin:0 0 16px;padding:0 0 4px 12px;border-left:3px solid var(--gold-d)}
+.swappanel.on{display:block}
+.swappanel .row{min-height:64px;margin-bottom:10px}
+.swappanel .ph{margin-bottom:10px}
+.swappanel p{font-size:17px}
+.link:active{background:var(--gold);color:#0b0b0b}
+#move{position:absolute;inset:0;background:var(--bg);overflow-y:auto;padding:12px 20px 28px;display:none;z-index:5}
+#move.on{display:block}
+.back{display:flex;align-items:center;gap:6px;min-height:52px;padding:0 18px 0 10px;margin:0 0 12px -6px;border:2px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font:inherit;font-size:19px;font-weight:700;cursor:pointer}
+.video{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:1px solid #333;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;color:var(--mute);font-size:16px}
+.video .play{width:64px;height:64px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center}
+.lab{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:18px 0 6px}
+.big{font-size:21px;line-height:1.4;margin:0}
+nav{flex:none;display:flex;border-top:1px solid var(--line);background:#0f0f0f;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent;color:var(--mute);font:inherit;font-size:15px;font-weight:700;letter-spacing:.5px;cursor:pointer}
+nav button svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--gold)}
+#toast{position:absolute;left:20px;right:20px;bottom:96px;background:var(--gold);color:#0b0b0b;font-weight:700;font-size:16px;padding:12px 14px;border-radius:12px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top"><h1>Muscle Mix</h1></header>
+  <main>
+    <section class="screen on" id="s-workouts"></section>
+    <section class="screen" id="s-library"></section>
+    <section class="screen" id="s-basics"></section>
+    <section id="move"></section>
+  </main>
+  <nav>
+    <button data-tab="workouts" class="on"><svg viewBox="0 0 24 24"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/></svg>WORKOUTS</button>
+    <button data-tab="library"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>LIBRARY</button>
+    <button data-tab="basics"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>BASICS</button>
+  </nav>
+  <div id="toast"></div>
+</div>
+<script>
+(function(){
+  var PH_PREFIX = "PLACEHOLDER: ";
+  var MOVES = {
+    "leg-press":{name:"Leg Press",area:"Legs",set:"gym",works:"The big muscles in the front and back of your thighs, and your buttocks.",url:"DdVmtQYAOq5"},
+    "leg-extension":{name:"Leg Extension",area:"Legs",set:"gym",works:"The muscles on the front of your thighs.",url:"DdC_CMRgEFM"},
+    "leg-curl":{name:"Leg Curl",area:"Legs",set:"gym",works:"The muscles on the back of your thighs.",url:"DcIDxohs0bX"},
+    "glute-machine":{name:"Glute machine",area:"Legs",set:"gym",works:"The muscles of your buttocks.",url:"Dd56XsSjF2O"},
+    "calf-raise":{name:"Calf raise",area:"Legs",set:"gym",works:"The muscles in the back of your lower legs, your calves.",url:"Df2zccdyfrg"},
+    "chest-press":{name:"Chest Press",area:"Push",set:"gym",works:"Your chest, the front of your shoulders, and the back of your upper arms.",url:"DcVyuwivsXf"},
+    "shoulder-press":{name:"Shoulder Press",area:"Push",set:"gym",works:"Your shoulders and the back of your upper arms.",url:"Db2UXvPNcpy"},
+    "lat-pull":{name:"Lat Pull",area:"Pull",set:"gym",works:"The large muscles of your upper back and the front of your upper arms.",url:"DbhITzfsnhG"},
+    "abs-machine":{name:"Abs machine",area:"Core",set:"gym",works:"The muscles across the front of your stomach.",url:"DdmcwKXSslf"},
+    "starfish":{name:"Starfish",set:"home",works:"The muscles around your middle.",url:"DeQXZwjEc6C"},
+    "plank":{name:"Plank",set:"home",works:"The muscles across your stomach, your back and your shoulders.",url:null},
+    "chair-sit-to-stand":{name:"Chair sit to stand",set:"home",works:"The muscles of your thighs and buttocks.",url:"Dfo6MfQBzVa"},
+    "squat-prep":{name:"Squat prep",set:"extras",works:"A warm-up that loosens your ankles, knees and hips before you squat.",url:"DedBa-PD-h8"},
+    "deep-squat-hold":{name:"Deep squat hold",set:"extras",works:"You sit low in a squat and rock gently side to side. It loosens your ankles, knees and hips.",url:"Deud3DZjn3G"},
+    "mini-trampoline":{name:"Mini trampoline",set:"extras",works:"You stand on a small trampoline and bounce gently. It uses the muscles of your legs and feet.",url:"DfAhEYvPsBZ"}
+  };
+  var IG = "https://www.instagram.com/reel/";
+  var WORKOUT = ["leg-press","chest-press","lat-pull","leg-curl"];
+  var SWAPS = {
+    "leg-press":{moves:["leg-extension","glute-machine"]},
+    "leg-curl":{text:"The seated leg curl, if your gym has one and you prefer it."},
+    "chest-press":{moves:["shoulder-press"]},
+    "lat-pull":{text:"Assisted pull-ups or the seated row, if your gym has them."}
+  };
+  var MORE = ["shoulder-press","abs-machine"];
+  var LIBMODES = [["gym","Gym machines"],["home","At home"],["extras","Mobility and extras"]];
+  var AREAS = ["Legs","Push","Pull","Core"];
+  var BASICS = [
+    {q:"How many days a week should I lift?",a:"When you are starting out, the goal is the habit. Get in there two or three times a week and give each muscle a few hard sets."},
+    {q:"What is a hard set?",a:"A hard set is one where the last few reps slow down and feel hard. Those last reps are what count."},
+    {q:"How many reps should I do?",a:"You have a lot of freedom, as long as the last few reps are hard. For most people, keeping sets to fifteen reps or fewer works well."},
+    {q:"How do I know when to stop for the day?",a:"If a weight you usually handle suddenly feels like a battle, you have likely run out of quality sets. Pack it up, rest, and come back in a couple of days."},
+    {q:"Should I wait and start next Monday?",a:"Your muscles do not care what day it is. If starting on a Monday helps the habit stick, that can be worth it, but every day you wait is sets you do not get."},
+    {q:"Why am I sore, and what should I do about it?",a:null}
+  ];
+  var state = {tab:"workouts", libMode:"gym", openFrom:null, scroll:{}};
+  var $ = function(id){return document.getElementById(id);};
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function ph(text){return '<div class="ph">'+PH_PREFIX+esc(text)+'</div>';}
+
+  function moveRow(id,from,small){
+    return '<button class="row" data-move="'+id+'" data-from="'+from+'"><div class="info"><div class="name">'+esc(MOVES[id].name)+'</div></div><div class="chev">&rsaquo;</div></button>';
+  }
+  function renderWorkouts(){
+    var h = '<h2>Your workout</h2>';
+    h += '<p>This is one good way to do it. You can swap any move for another that works the same muscles.</p>';
+    h += '<div class="rule"><p>Start with two hard sets of each move, eight to twelve reps a set. When that feels routine, build to three sets. The last few reps should be hard.</p><p>Do this same workout two or three days a week.</p></div>';
+    WORKOUT.forEach(function(id,i){
+      var m = MOVES[id], sw = SWAPS[id];
+      h += '<button class="row" data-move="'+id+'" data-from="workouts">'
+        + '<div class="thumb">Doreen</div>'
+        + '<div class="info"><div class="num">Move '+(i+1)+'</div><div class="name">'+esc(m.name)+'</div>'
+        + '<div class="ph">'+PH_PREFIX+'one-line reminder</div></div>'
+        + '<div class="chev">&rsaquo;</div></button>';
+      h += '<button class="swapbtn" data-swap="'+id+'" aria-expanded="false">Swap</button>';
+      h += '<div class="swappanel" id="swap-'+id+'">';
+      if(sw.moves){ sw.moves.forEach(function(x){ h += moveRow(x,"workouts"); }); }
+      else if(sw.text){ h += '<p>'+esc(sw.text)+'</p>'; }
+      else if(sw.ph){ h += ph(sw.ph); }
+      h += '</div>';
+    });
+    h += '<div class="group"><h3>Want more?</h3><p>Add one of these after your four moves.</p>';
+    MORE.forEach(function(id){ h += moveRow(id,"workouts"); });
+    h += '</div>';
+    $("s-workouts").innerHTML = h;
+  }
+
+  function renderLibrary(){
+    var h = '<div class="section-label">Moms &amp; Machines</div>';
+    h += '<div class="seg">'+LIBMODES.map(function(m){return '<button data-mode="'+m[0]+'" class="'+(state.libMode===m[0]?"on":"")+'">'+m[1]+'</button>';}).join("")+'</div>';
+    function libRow(id){ return '<button class="row" data-move="'+id+'" data-from="library"><div class="thumb" style="width:56px;height:56px">Doreen</div><div class="info"><div class="name">'+esc(MOVES[id].name)+'</div></div><div class="chev">&rsaquo;</div></button>'; }
+    if(state.libMode==="gym"){
+      AREAS.forEach(function(area){
+        var ids = Object.keys(MOVES).filter(function(id){return MOVES[id].area===area && MOVES[id].set==="gym";});
+        if(!ids.length) return;
+        h += '<div class="group"><h3>'+area+'</h3>';
+        ids.forEach(function(id){ h += libRow(id); });
+        h += '</div>';
+      });
+    } else {
+      if(state.libMode==="extras") h += '<p>These loosen you up. They are worth doing, and they do not replace the workout.</p>';
+      Object.keys(MOVES).filter(function(id){return MOVES[id].set===state.libMode;}).forEach(function(id){ h += libRow(id); });
+    }
+    $("s-library").innerHTML = h;
+  }
+
+  function renderBasics(){
+    var h = '<h2>The basics</h2>';
+    BASICS.forEach(function(b){
+      h += '<div class="q"><h3>'+esc(b.q)+'</h3>';
+      if(b.a){ h += '<p>'+esc(b.a)+'</p>'; }
+      else { h += ph("Phillip writes this answer (one or two sentences)"); h += '<div style="height:10px"></div>'; }
+      h += '<button class="link" data-link="1">Watch the full video</button></div>';
+    });
+    $("s-basics").innerHTML = h;
+  }
+
+  function openMove(id, from){
+    var m = MOVES[id]; if(!m) return;
+    var scr = $("s-"+from);
+    state.scroll[from] = scr.scrollTop;
+    state.openFrom = from;
+    $("move").innerHTML =
+      '<button class="back" id="back-btn">&lsaquo; Back to '+(from==="workouts"?"workout":"library")+'</button>'
+      + '<h2>'+esc(m.name)+'</h2>'
+      + '<div class="video"><div class="play"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#0b0b0b"/></svg></div>Moms &amp; Machines clip</div>'
+      + '<div class="lab">What it works</div><p class="big">'+esc(m.works)+'</p>'
+      + '<div class="lab">The one cue</div>'+ph("Phillip writes this cue (one line)")
+      + (m.url ? '<a class="link" style="margin-top:22px" href="'+IG+m.url+'/" target="_blank" rel="noopener">Watch the full episode on Instagram</a>'
+             : '<button class="link" data-link="1" style="margin-top:22px">Watch the full episode on Instagram</button>');
+    $("move").classList.add("on");
+    $("move").scrollTop = 0;
+    $("back-btn").addEventListener("click", closeMove);
+  }
+  function closeMove(){
+    $("move").classList.remove("on");
+    var from = state.openFrom;
+    if(from){ $("s-"+from).scrollTop = state.scroll[from] || 0; }
+    state.openFrom = null;
+  }
+  function showTab(t){
+    if($("move").classList.contains("on")) { $("move").classList.remove("on"); state.openFrom=null; }
+    state.tab = t;
+    ["workouts","library","basics"].forEach(function(n){ $("s-"+n).classList.toggle("on", n===t); });
+    Array.prototype.forEach.call(document.querySelectorAll("nav button"), function(b){ b.classList.toggle("on", b.getAttribute("data-tab")===t); });
+  }
+  var toastTimer;
+  function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("on");},1800); }
+
+  document.addEventListener("click", function(e){
+    var el = e.target.closest ? e.target.closest("[data-tab],[data-move],[data-mode],[data-link],[data-swap]") : null;
+    if(!el) return;
+    if(el.hasAttribute("data-swap")){
+      var id = el.getAttribute("data-swap"), pn = $("swap-"+id), on = !pn.classList.contains("on");
+      pn.classList.toggle("on", on); el.classList.toggle("on", on); el.setAttribute("aria-expanded", on);
+      el.textContent = "Swap";
+    }
+    else if(el.hasAttribute("data-tab")) showTab(el.getAttribute("data-tab"));
+    else if(el.hasAttribute("data-move")) openMove(el.getAttribute("data-move"), el.getAttribute("data-from"));
+    else if(el.hasAttribute("data-mode")){
+      state.libMode = el.getAttribute("data-mode");
+      renderLibrary(); $("s-library").scrollTop = 0;
+    }
+    else if(el.hasAttribute("data-link")) toast("Placeholder link: video goes here later");
+  });
+
+  renderWorkouts(); renderLibrary(); renderBasics();
+})();
+</script>
+</body>
+</html>
