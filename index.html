@@ -214,8 +214,8 @@ nav button.on{color:var(--gold)}
     return '<button class="row" data-move="'+id+'" data-from="'+from+'"><div class="info"><div class="name">'+esc(MOVES[id].name)+'</div></div><div class="chev">&rsaquo;</div></button>';
   }
   function renderWorkouts(){
-    var h = '<h2>Your workout</h2>';
-    h += '<p>This is one good way to do it. You can swap any move for another that works the same muscles.</p>';
+    var h = '<h2>Your starting workout</h2>';
+    h += '<p>This is where we recommend you start. If you prefer a different move, tap Swap and trade it in.</p>';
     h += '<div class="rule"><p>Start with two hard sets of each move, eight to twelve reps a set. When that feels routine, build to three sets. The last few reps should be hard.</p><p>Do this same workout two or three days a week.</p></div>';
     WORKOUT.forEach(function(id,i){
       var m = MOVES[id], sw = SWAPS[id];
