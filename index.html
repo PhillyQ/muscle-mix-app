@@ -56,11 +56,48 @@ p{font-size:18px;line-height:1.45;margin:0 0 12px}
 .lab{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:18px 0 6px}
 .big{font-size:21px;line-height:1.4;margin:0}
 nav{flex:none;display:flex;border-top:1px solid var(--line);background:#0f0f0f;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent;color:var(--mute);font:inherit;font-size:15px;font-weight:700;letter-spacing:.5px;cursor:pointer}
+nav button{flex:1;min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent;color:var(--mute);font:inherit;font-size:13px;font-weight:700;letter-spacing:0;cursor:pointer}
 nav button svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--gold)}
 #toast{position:absolute;left:20px;right:20px;bottom:96px;background:var(--gold);color:#1C1B17;font-weight:700;font-size:16px;padding:12px 14px;border-radius:12px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
 #toast.on{opacity:1}
+.bodymap{display:flex;gap:14px;justify-content:center;margin:0 0 14px}
+.bodymap figure{margin:0;flex:none;text-align:center}
+.bodymap svg{display:block;height:190px;width:auto;margin:0 auto}
+.bodymap figcaption{font-size:13px;color:var(--mute);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.bodymap.big{gap:26px;margin:4px 0 16px}
+.bodymap.big svg{height:44vh;height:clamp(230px,calc(100dvh - 345px),440px);transition:height .2s}
+.bp{fill:#2f2d27}
+.bp2{fill:#463d36;stroke:#1C1B17;stroke-width:1;stroke-linejoin:round}
+.ln{fill:none;stroke:#1C1B17;stroke-width:1;stroke-linecap:round}
+.m{fill:#7b4a40;stroke:#1C1B17;stroke-width:1;stroke-linejoin:round}
+.m.tap{cursor:pointer}
+.m.sel,.m.main{fill:#DB9928}
+.m.helps{fill:#8a6524}
+.m.dim,.m.off{fill:#463d36}
+.mlist .lab{margin:14px 0 8px}
+.mlist .row{min-height:64px;padding:10px 14px;margin-bottom:10px}
+.mlist .row .name{font-size:19px}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin:0 0 6px}
+.mname{font-size:26px;font-weight:800;color:var(--gold);line-height:1.15;margin:0}
+.mfull{display:block;font-size:14px;font-weight:600;color:var(--mute);margin:2px 0 0}
+.allbtn{flex:none;min-height:44px;padding:0 16px;border:2px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.allbtn.on{background:var(--gold);color:#1C1B17}
+.picking .mtop{position:sticky;top:-20px;z-index:2;background:var(--bg);margin:-20px -20px 0;padding:20px 20px 2px}
+.picking .bodymap.big svg{height:30vh;height:clamp(180px,calc(100dvh - 604px),340px)}
+.mall .lab{font-size:12px;margin:8px 0 6px}
+.mall .chips{margin:0 0 4px}
+.mall .chip{min-height:40px;padding:0 10px;font-size:15px}
+.mline{font-size:18px;line-height:1.45;margin:0 0 6px}
+.m.tap:focus{outline:none}
+.m.tap:focus-visible{outline:none;stroke:#FAF7F0;stroke-width:2.5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.chip{min-height:44px;padding:0 14px;border-radius:22px;border:2px solid var(--gold-d);background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.chip.on,.chip.main{background:var(--gold);border-color:var(--gold);color:#1C1B17}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;color:var(--mute);margin:0 0 12px}
+.legend i{display:inline-block;width:16px;height:16px;border-radius:4px;margin-right:6px;vertical-align:-2px}
+.note{font-size:16px;color:var(--mute);margin:8px 0 0}
+.usebtn{display:block;min-height:48px;width:100%;margin:-4px 0 14px;border:0;border-radius:12px;background:var(--gold);color:#1C1B17;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -155,12 +192,14 @@ nav button.on{color:var(--gold)}
   <main>
     <section class="screen on" id="s-workouts"></section>
     <section class="screen" id="s-library"></section>
+    <section class="screen" id="s-muscles"></section>
     <section class="screen" id="s-basics"></section>
     <section id="move"></section>
   </main>
   <nav>
     <button data-tab="workouts" class="on"><svg viewBox="0 0 24 24"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/></svg>WORKOUTS</button>
     <button data-tab="library"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>LIBRARY</button>
+    <button data-tab="muscles"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.5"/><path d="M12 7v7M7 9.5h10M12 14l-3.5 7M12 14l3.5 7"/></svg>MUSCLES</button>
     <button data-tab="basics"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>BASICS</button>
   </nav>
   <div id="toast"></div>
@@ -169,7 +208,7 @@ nav button.on{color:var(--gold)}
 (function(){
   var PH_PREFIX = "PLACEHOLDER: ";
   var MOVES = {
-    "leg-press":{name:"Leg Press",area:"Legs",set:"gym",works:"The big muscles in the front and back of your thighs, and your buttocks.",url:"DdVmtQYAOq5"},
+    "leg-press":{name:"Leg Press",area:"Legs",set:"gym",works:"The big muscles in the front of your thighs, and your buttocks.",url:"DdVmtQYAOq5"},
     "leg-extension":{name:"Leg Extension",area:"Legs",set:"gym",works:"The muscles on the front of your thighs.",url:"DdC_CMRgEFM"},
     "leg-curl":{name:"Leg Curl",area:"Legs",set:"gym",works:"The muscles on the back of your thighs.",url:"DcIDxohs0bX"},
     "glute-machine":{name:"Glute machine",area:"Legs",set:"gym",works:"The muscles of your buttocks.",url:"Dd56XsSjF2O"},
@@ -178,22 +217,135 @@ nav button.on{color:var(--gold)}
     "shoulder-press":{name:"Shoulder Press",area:"Push",set:"gym",works:"Your shoulders and the back of your upper arms.",url:"Db2UXvPNcpy"},
     "lat-pull":{name:"Lat Pull",area:"Pull",set:"gym",works:"The large muscles of your upper back and the front of your upper arms.",url:"DbhITzfsnhG"},
     "abs-machine":{name:"Abs machine",area:"Core",set:"gym",works:"The muscles across the front of your stomach.",url:"DdmcwKXSslf"},
-    "starfish":{name:"Starfish",set:"home",works:"The muscles around your middle.",url:"DeQXZwjEc6C"},
-    "plank":{name:"Plank",set:"home",works:"The muscles across your stomach, your back and your shoulders.",url:null},
+    "starfish":{name:"Starfish",set:"home",works:"The muscles of your lower back.",url:"DeQXZwjEc6C"},
+    "plank":{name:"Plank",set:"home",works:"The muscles across the front and sides of your stomach.",url:null},
     "chair-sit-to-stand":{name:"Chair sit to stand",set:"home",works:"The muscles of your thighs and buttocks.",url:"Dfo6MfQBzVa"},
     "squat-prep":{name:"Squat prep",set:"extras",works:"A warm-up that loosens your ankles, knees and hips before you squat.",url:"DedBa-PD-h8"},
     "deep-squat-hold":{name:"Deep squat hold",set:"extras",works:"You sit low in a squat and rock gently side to side. It loosens your ankles, knees and hips.",url:"Deud3DZjn3G"},
     "mini-trampoline":{name:"Mini trampoline",set:"extras",works:"You stand on a small trampoline and bounce gently. It uses the muscles of your legs and feet.",url:"DfAhEYvPsBZ"}
   };
   var IG = "https://www.instagram.com/reel/";
-  var WORKOUT = ["leg-press","chest-press","lat-pull","leg-curl"];
-  var SWAPS = {
-    "leg-press":{moves:["leg-extension","glute-machine"]},
-    "leg-curl":{text:"The seated leg curl, if your gym has one and you prefer it."},
-    "chest-press":{moves:["shoulder-press"]},
-    "lat-pull":{text:"Assisted pull-ups or the seated row, if your gym has them."}
-  };
   var MORE = ["shoulder-press","abs-machine"];
+  // ---- Muscles data and body map (added Nov 21 2026). Paste inside the IIFE, after the MOVES/SWAPS data. ----
+  // Wording below is draft copy awaiting Phillip's check. Do not reword it.
+  var MUSCLES = {
+    shoulders:{name:"Shoulders", line:"The caps of your shoulders. They lift things up onto a high shelf."},
+    chest:{name:"Chest", line:"The front of your upper body. It pushes a heavy door open and pushes you up off the floor."},
+    biceps:{name:"Biceps", line:"The front of your upper arms. They bend your elbows to carry the groceries in one trip."},
+    triceps:{name:"Triceps", line:"The back of your upper arms. They straighten your elbows to push you up out of a chair."},
+    traps:{name:"Upper traps", full:"trapezius", line:"The tops of your shoulders, up to your neck. They carry a heavy bag at your side."},
+    midback:{name:"Mid back", line:"Between your shoulder blades. They pull your shoulders back and help you stand up tall."},
+    lats:{name:"Lats", full:"latissimus dorsi", line:"The wide muscles down the sides of your back. They pull a suitcase down from the overhead bin."},
+    lowback:{name:"Low back", line:"The muscles along your spine. They hold your back steady when you pick something up off the floor."},
+    abs:{name:"Abs", full:"abdominals", line:"The front of your stomach. They sit you up out of bed and hold your middle steady."},
+    obliques:{name:"Obliques", line:"The sides of your waist. They turn you to reach the back seat of the car."},
+    glutes:{name:"Glutes", full:"gluteals", line:"Your buttocks. They stand you up out of a chair and carry you up stairs."},
+    quads:{name:"Quads", full:"quadriceps", line:"The front of your thighs. They get you up off the floor and take you down the stairs."},
+    inner:{name:"Inner thighs", line:"The inside of your thighs. They steady you when you step to the side or get out of the car."},
+    hamstrings:{name:"Hamstrings", line:"The back of your thighs. They work when you bend down to pick something up and stand back up."},
+    calves:{name:"Calves", line:"The back of your lower legs. They push you off the ground with every step."}
+  };
+  var MUSCLE_GROUPS = [["Upper body",["shoulders","chest","biceps","triceps","traps","midback","lats"]],["Core",["abs","obliques","lowback"]],["Lower body",["glutes","quads","hamstrings","inner","calves"]]];
+  var MUSCLE_ORDER = ["shoulders","chest","biceps","triceps","traps","midback","lats","lowback","abs","obliques","glutes","quads","inner","hamstrings","calves"];
+
+  // Which muscles each move trains. main = does most of the work (three at most). helps = assists.
+  // Moves that are not listed here (the three mobility moves) show no muscles.
+  var TARGETS = {
+    "leg-press":{main:["quads","glutes"],helps:["inner"]},
+    "leg-extension":{main:["quads"],helps:[]},
+    "glute-machine":{main:["glutes"],helps:[]},
+    "leg-curl":{main:["hamstrings"],helps:["calves"]},
+    "calf-raise":{main:["calves"],helps:[]},
+    "chest-press":{main:["chest"],helps:["shoulders","triceps"]},
+    "shoulder-press":{main:["shoulders"],helps:["triceps","traps"]},
+    "lat-pull":{main:["lats"],helps:["biceps","midback"]},
+    "abs-machine":{main:["abs"],helps:["obliques"]},
+    "starfish":{main:["lowback"],helps:[]},
+    "plank":{main:["abs"],helps:["obliques"]},
+    "chair-sit-to-stand":{main:["quads","glutes"],helps:[]}
+  };
+
+  // Swap slots. Position i of the workout always holds one move from SLOTS[i].
+  var SLOTS = [["leg-press","leg-extension","glute-machine"],["chest-press","shoulder-press"],["lat-pull"],["leg-curl"]];
+  var SLOT_NOTES = {2:"Assisted pull-ups or the seated row, if your gym has them.",3:"The seated leg curl, if your gym has one and you prefer it."};
+  var DEFAULT_WORKOUT = ["leg-press","chest-press","lat-pull","leg-curl"];
+
+  // Body map shapes. Left half is drawn and mirrored, except centre shapes (c:1).
+  // g: "" = body outline, "~" = muscle that no move trains yet (neutral), "-" = thin detail line, otherwise a MUSCLES id.
+  var P=function(d,g){return {t:"p",d:d,g:g};}, E=function(cx,cy,rx,ry,r,g){return {t:"e",cx:cx,cy:cy,rx:rx,ry:ry,r:r,g:g};}, R=function(x,y,w,h,g){return {t:"r",x:x,y:y,w:w,h:h,g:g};}, C=function(s){s.c=1;return s;};
+  var HEAD="M100,12 C89,12 84,21 84,34 C84,45 87,54 93,59 C96,62 98,63 100,63 C102,63 104,62 107,59 C113,54 116,45 116,34 C116,21 111,12 100,12 Z";
+  var HALF="M100,56 L91,58 L90,74 C88,78 80,81 72,82 C62,83 54,88 51,98 C48,108 47,122 47,136 C46,150 44,164 43,174 C39,186 37,204 37,222 C36,230 36,236 36,240 C35,244 34,248 33,254 C32,262 33,272 36,280 C38,284 43,284 45,278 C47,272 47.5,264 47,254 C47.5,258 48,262 49.5,264 C52,265 53.5,261 53,256 C52,250 49,244 46,240 C48,222 52,204 55,188 C56,182 57,178 57,174 C59,160 62,142 64,126 C65,120 66,116 67,114 C68,130 71,150 73,166 C74,174 74,180 73,186 C71,198 68,210 66,222 C62,246 63,280 68.5,304 C70,312 70.5,320 69.5,328 C65,342 65,362 69.5,382 C71.5,394 73.5,404 74,410 C72,418 66,426 64,432 C64,436 68,438 74,438 L90,438 C94,438 95,434 94,430 C92,422 90,416 89,410 C91,396 93.5,374 93,354 C92.5,342 92,332 92.5,324 C95,300 98.5,268 99,240 L100,234 Z";
+  var FOREARM=[P("M44.5,173 C40.5,186 38.5,206 38,224 C38.5,230 41,232 43,229 C44,212 46.5,193 50,177 C48.5,174 46.5,172.5 44.5,173 Z","~"),P("M52,177 C48.5,193 46.5,212 45.5,231 C47.5,233 49.5,230 50.5,224 C52,208 54,193 56.5,181 C55.5,178 53.5,176 52,177 Z","~"),P("M37.5,264 L38,279 M40.5,265 L41,281 M43.5,264 L43.5,279","-")];
+  var BODY = {
+    front:[C(P(HEAD,"")),P(HALF,""),
+      P("M92,60 C93,68 96,75 99,80 L95,80 C92.5,76 91,70 91,64 Z","~"),
+      P("M90,70 C88,76 82,80 73,82 L90,82 C91,78 91,74 90,70 Z","traps"),
+      P("M72,83 C62,84 54,89 52,99 C50,110 50,122 53,134 C56,136 58,132 60,126 C63,116 67,104 70,96 C71,91 72,87 72,83 Z","shoulders"),
+      P("M98,84 L74,84 C72,90 70,97 68,104 C66,110 65,116 66,120 C70,128 80,132 90,131 C94,130 97,128 98,126 Z","chest"),
+      P("M57,132 C53.5,142 51.5,156 51.5,168 C53.5,173 57,174 59,170 C61.5,158 63.5,144 64.5,130 C62.5,126 59.5,127 57,132 Z","biceps"),
+      P("M49.5,130 C47.5,142 46.5,156 45.5,168 C47.5,171 49.5,169 50.5,165 C50.5,153 52.5,141 55,134 C53,133 51,132 49.5,130 Z","triceps"),
+      FOREARM[0],FOREARM[1],FOREARM[2],
+      P("M67.5,123 C70,129 76,133.5 86,134.5 L85,150 L72,146 C70,138 68.5,130 67.5,123 Z","~"),
+      P("M88,135 L98.5,134 L98.5,149 L86.5,150 C86.6,144 87,139 88,135 Z","abs"),R(86.5,152,12,15,"abs"),R(86.5,169,12,16,"abs"),
+      P("M86.5,187 L98.5,187 L98.5,226 C93,221 88,208 86.5,196 Z","abs"),
+      P("M84.5,152 L72.5,148.5 C73.5,158 74,166 74,172 C74.5,180 74,186 72.5,192 C71,198 70,204 69,208 C75,208 81,212 85,220 Z","obliques"),
+      P("M70,212 C77,214 86,220 95,230 C92,229 89,229 86,229 C83,225 79,224 76,225 C74,223 71,222 68.5,222 C69,218 69.5,215 70,212 Z","~"),
+      P("M67.5,224 C64,246 64.5,278 68.5,304 C70,312 74,317 76.5,311 C74,290 73,262 74.5,230 C72.5,225 70,223 67.5,224 Z","quads"),
+      P("M76,226 C74.5,250 75,280 78,304 C80,311 84,311 86,304 C88.5,282 88,252 84.5,230 C82,225 78,224 76,226 Z","quads"),
+      P("M89,254 C92,268 94.5,288 93.5,305 C92.5,314 88,317 87,309 C89,292 89.5,272 89,254 Z","quads"),
+      P("M86,230 C88.5,240 89.5,248 90,254 C93,264 95,278 95.5,290 C97,274 98.5,256 99,240 C96,235 91,231 86,230 Z","inner"),
+      E(80.5,321,6,7,0,"~"),
+      P("M75.5,334 C73,346 73,364 74.5,380 C75.5,390 77,397 79,400 C80.5,394 81.5,374 81.5,354 C81.5,345 80.5,339 79.5,334 C78,332.5 76.5,332.5 75.5,334 Z","~"),
+      P("M72,335 C67.5,346 67,362 69.5,378 C70.5,385 72,390 73.5,393 C72,378 71.5,362 72.5,348 C73,343 73.5,339 74.5,335 C73.5,334 72.5,334 72,335 Z","calves"),
+      P("M84.5,334 C90,342 92,356 91,370 C90.5,379 88.5,386 86,390 C84.5,374 84.5,356 83.5,338 C83.5,336 84,334.5 84.5,334 Z","calves"),
+      P("M70,432 L70,437 M76,432 L76,437 M82,432 L82,437 M88,432 L88,437","-")],
+    back:[C(P(HEAD,"")),P(HALF,""),
+      P("M65,119 C67,134 70,152 73,168 C74,176 74,184 73,190 C78,190 84,188 90,184 C93,178 95,170 96,163 L89,129 C81,126 72,123 65,119 Z","lats"),
+      P("M100,58 L93,60 C92,68 90,75 86,78 C82,81 77,82 72,83 C76,86 82,88 88,89 C92,90 96,92 100,96 Z","traps"),
+      P("M100,96 C96,92 92,90 88,89 C84,89 80,88 78,88 C80,100 85,116 91,132 C94,142 97,152 100,160 Z","midback"),
+      P("M72,83 C62,84 54,89 52,99 C50,110 50,122 53,134 C56,134 58,130 60,124 C63,114 68,104 73,96 C76,92 77,89 78,88 C76,86 74,85 72,83 Z","shoulders"),
+      P("M78,91 C73,99 68,108 64,117 C72,120 81,123 89,127 C85,115 81,102 78,91 Z","~"),
+      P("M53,134 C50,144 48,158 47,170 C50,174 54,174 57,172 C59,160 62,146 64,130 C62,126 60,126 58,130 C56,133 55,134 53,134 Z","triceps"),
+      FOREARM[0],FOREARM[1],FOREARM[2],
+      P("M100,160 L97,163 C96,172 93,180 90,186 C90,196 92,206 96,212 L100,214 Z","lowback"),
+      P("M73,190 C72,196 70,203 69,208 C75,207 82,204 89,198 C89,194 89,190 90,186 C84,189 78,191 73,190 Z","obliques"),
+      P("M69,210 C74,208 82,206 89,200 C90,204 92,208 95,212 C88,212 78,214 70,220 C69,216 69,213 69,210 Z","~"),
+      P("M100,216 C96,213 90,213 84,214 C77,215 71,219 68,226 C65.5,236 66,248 70,256 C78,262 90,262 97,256 C99,252 100,246 100,240 Z","glutes"),
+      P("M67,260 C65,278 66.5,298 71,316 C73,322 78,322 80,316 C81,298 81,278 79.5,264 C75,264 70.5,263 67,260 Z","hamstrings"),
+      P("M81.5,265 C82,280 82,300 83,316 C85,322 90,322 92,316 C95.5,298 97.5,280 98,262 C93,266 87,267 81.5,265 Z","hamstrings"),
+      E(81,327,7,4,0,"~"),
+      P("M70,334 C65.5,346 66,364 70,380 C72,386 76,386 78.5,380 C79.5,366 79.5,350 78.5,336 C75.5,332 72,332 70,334 Z","calves"),
+      P("M80.5,336 C80.5,350 80.5,366 81.5,382 C83.5,388 88.5,388 90.5,380 C93,366 93,350 91.5,336 C88,332 83.5,332 80.5,336 Z","calves"),
+      P("M73,388 C74,398 75.5,405 77,410 L87,410 C88.5,404 89,396 89.5,388 C84,392 78,392 73,388 Z","~")]
+  };
+  function shapeSvg(s,mir,cls,tapId){
+    var a=' class="'+cls+'"';
+    if(tapId){ a+=' data-muscle="'+tapId+'"'; if(!mir) a+=' tabindex="0" role="button" aria-label="'+MUSCLES[tapId].name+'"'; }
+    var mt=mir?"matrix(-1 0 0 1 200 0)":"";
+    if(s.t==="p") return '<path'+a+' d="'+s.d+'"'+(mt?' transform="'+mt+'"':'')+'/>';
+    if(s.t==="e"){ var tf=(mt?mt+" ":"")+(s.r?"rotate("+s.r+" "+s.cx+" "+s.cy+")":""); return '<ellipse'+a+' cx="'+s.cx+'" cy="'+s.cy+'" rx="'+s.rx+'" ry="'+s.ry+'"'+(tf?' transform="'+tf+'"':'')+'/>'; }
+    return '<rect'+a+' x="'+s.x+'" y="'+s.y+'" width="'+s.w+'" height="'+s.h+'" rx="2.5"'+(mt?' transform="'+mt+'"':'')+'/>';
+  }
+  // view: "front" or "back". clsOf(muscleId) returns one extra class for that muscle's shapes:
+  //   "sel" (selected), "main", "helps", "dim" (not involved), "off" (no move trains it yet) or "" (idle).
+  // tap: true makes every muscle shape that is not "off" tappable (it gets data-muscle="<id>" and class "tap").
+  function bodySvg(view,clsOf,tap){
+    var h='<svg viewBox="28 8 144 434" role="img" aria-label="'+(view==="front"?"Front":"Back")+' of the body">';
+    BODY[view].forEach(function(s){
+      var isM=!!(s.g&&s.g!=="~"&&s.g!=="-");
+      var extra=isM?clsOf(s.g):"", canTap=!!(isM&&tap&&extra!=="off");
+      var cls=isM?("m"+(extra?" "+extra:"")+(canTap?" tap":"")):(s.g==="~"?"bp2":(s.g==="-"?"ln":"bp"));
+      h+=shapeSvg(s,false,cls,canTap?s.g:null); if(!s.c) h+=shapeSvg(s,true,cls,canTap?s.g:null);
+    });
+    return h+'</svg>';
+  }
+  // Moves that train a muscle: {main:[moveIds], helps:[moveIds]} in MOVES order.
+  function movesFor(muscleId){
+    var out={main:[],helps:[]};
+    Object.keys(MOVES).forEach(function(id){ var t=TARGETS[id]; if(!t) return;
+      if(t.main.indexOf(muscleId)>=0) out.main.push(id); else if(t.helps.indexOf(muscleId)>=0) out.helps.push(id); });
+    return out;
+  }
   var LIBMODES = [["gym","Gym machines"],["home","At home"],["extras","Mobility and extras"]];
   var AREAS = ["Legs","Push","Pull","Core"];
   var BASICS = [
@@ -204,7 +356,18 @@ nav button.on{color:var(--gold)}
     {q:"Should I wait and start next Monday?",a:"Your muscles do not care what day it is. If starting on a Monday helps the habit stick, that can be worth it, but every day you wait is sets you do not get."},
     {q:"Why am I sore, and what should I do about it?",a:null}
   ];
-  var state = {tab:"workouts", libMode:"gym", openFrom:null, scroll:{}};
+  var state = {tab:"workouts", libMode:"gym", openFrom:null, scroll:{}, workout:loadWorkout(), muscle:"quads"};
+  function loadWorkout(){
+    var w = null;
+    try{ w = JSON.parse(localStorage.getItem("mm_workout_v1")); }catch(err){ w = null; }
+    var ok = Array.isArray(w) && w.length===4;
+    if(ok){ for(var i=0;i<4;i++){ if(typeof w[i]!=="string" || SLOTS[i].indexOf(w[i])<0){ ok=false; break; } } }
+    return ok ? w : DEFAULT_WORKOUT.slice();
+  }
+  function saveWorkout(){ try{ localStorage.setItem("mm_workout_v1", JSON.stringify(state.workout)); }catch(err){} }
+  function setWorkoutMove(i, id){ state.workout[i] = id; saveWorkout(); renderWorkouts(); }
+  function slotOf(id){ for(var i=0;i<SLOTS.length;i++){ if(SLOTS[i].indexOf(id)>=0) return i; } return -1; }
+  function sameAsDefault(){ for(var i=0;i<4;i++){ if(state.workout[i]!==DEFAULT_WORKOUT[i]) return false; } return true; }
   var $ = function(id){return document.getElementById(id);};
 
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
@@ -217,8 +380,8 @@ nav button.on{color:var(--gold)}
     var h = '<h2>Your starting workout</h2>';
     h += '<p>This is where we recommend you start. If you prefer a different move, tap Swap and trade it in.</p>';
     h += '<div class="rule"><p>Start with two hard sets of each move, eight to twelve reps a set. When that feels routine, build to three sets. The last few reps should be hard.</p><p>Do this same workout two or three days a week.</p></div>';
-    WORKOUT.forEach(function(id,i){
-      var m = MOVES[id], sw = SWAPS[id];
+    state.workout.forEach(function(id,i){
+      var m = MOVES[id];
       h += '<button class="row" data-move="'+id+'" data-from="workouts">'
         + '<div class="thumb">Doreen</div>'
         + '<div class="info"><div class="num">Move '+(i+1)+'</div><div class="name">'+esc(m.name)+'</div>'
@@ -226,15 +389,64 @@ nav button.on{color:var(--gold)}
         + '<div class="chev">&rsaquo;</div></button>';
       h += '<button class="swapbtn" data-swap="'+id+'" aria-expanded="false">Swap</button>';
       h += '<div class="swappanel" id="swap-'+id+'">';
-      if(sw.moves){ sw.moves.forEach(function(x){ h += moveRow(x,"workouts"); }); }
-      else if(sw.text){ h += '<p>'+esc(sw.text)+'</p>'; }
-      else if(sw.ph){ h += ph(sw.ph); }
+      SLOTS[i].forEach(function(x){
+        if(x===id) return;
+        h += moveRow(x,"workouts");
+        h += '<button class="usebtn" data-use="'+x+'" data-slot="'+i+'">Use this instead</button>';
+      });
+      if(SLOT_NOTES[i]){ h += '<p>'+esc(SLOT_NOTES[i])+'</p>'; }
       h += '</div>';
     });
     h += '<div class="group"><h3>Want more?</h3><p>Add one of these after your four moves.</p>';
-    MORE.forEach(function(id){ h += moveRow(id,"workouts"); });
+    MORE.forEach(function(id){ if(state.workout.indexOf(id)<0) h += moveRow(id,"workouts"); });
     h += '</div>';
+    if(!sameAsDefault()) h += '<button class="link" data-reset="1">Back to the starting workout</button>';
     $("s-workouts").innerHTML = h;
+  }
+
+  function renderMuscles(){
+    var clsOf = function(id){ var mv = movesFor(id); return (!mv.main.length && !mv.helps.length) ? "off" : ""; };
+    var h = '<div class="mtop">';
+    h += '<div class="bodymap big"><figure><figcaption>Front</figcaption>'+bodySvg("front",clsOf,true)+'</figure><figure><figcaption>Back</figcaption>'+bodySvg("back",clsOf,true)+'</figure></div>';
+    h += '<div class="mhead"><div class="mname" aria-live="polite"><span id="muscle-name"></span><span class="mfull" id="muscle-full"></span></div>';
+    h += '<button class="allbtn" id="all-btn" data-all="1" aria-expanded="false">All muscles</button></div></div>';
+    h += '<div id="muscle-detail"><p class="mline" id="muscle-line"></p><div class="mlist" id="muscle-list"></div></div>';
+    h += '<div class="mall" id="muscle-all" hidden>';
+    MUSCLE_GROUPS.forEach(function(g){
+      var ids = g[1].filter(function(id){ return clsOf(id)!=="off"; });
+      if(!ids.length) return;
+      h += '<div class="lab">'+g[0]+'</div><div class="chips">';
+      ids.forEach(function(id){ h += '<button class="chip" data-muscle="'+id+'">'+esc(MUSCLES[id].name)+'</button>'; });
+      h += '</div>';
+    });
+    h += '</div>';
+    $("s-muscles").innerHTML = h;
+    updateMuscle();
+  }
+  // Updates the Muscles tab in place, so the page never moves when a muscle is picked.
+  function updateMuscle(){
+    var scr = $("s-muscles"), id = state.muscle, sel = MUSCLES[id], mv = movesFor(id);
+    Array.prototype.forEach.call(scr.querySelectorAll(".m[data-muscle]"), function(n){ n.classList.toggle("sel", n.getAttribute("data-muscle")===id); });
+    Array.prototype.forEach.call($("muscle-all").querySelectorAll(".chip"), function(n){ var is = n.getAttribute("data-muscle")===id; n.classList.toggle("on", is); n.setAttribute("aria-pressed", is ? "true" : "false"); });
+    $("muscle-name").textContent = sel.name;
+    $("muscle-full").textContent = sel.full ? "short for "+sel.full : "";
+    $("muscle-line").textContent = sel.line;
+    var h = "";
+    if(mv.main.length){ h += '<div class="lab">Moves that train it</div>'; mv.main.forEach(function(m){ h += moveRow(m,"muscles"); }); }
+    if(mv.helps.length){ h += '<div class="lab">Moves that also help</div>'; mv.helps.forEach(function(m){ h += moveRow(m,"muscles"); }); }
+    $("muscle-list").innerHTML = h;
+  }
+  // "All muscles" swaps the space under the figures between the list of names and the selected muscle's details.
+  function setPicking(on){
+    state.picking = !!on;
+    var scr = $("s-muscles"), btn = $("all-btn");
+    scr.classList.toggle("picking", state.picking);
+    $("muscle-all").hidden = !state.picking;
+    $("muscle-detail").hidden = state.picking;
+    btn.textContent = state.picking ? "Done" : "All muscles";
+    btn.classList.toggle("on", state.picking);
+    btn.setAttribute("aria-expanded", state.picking ? "true" : "false");
+    scr.scrollTop = 0;
   }
 
   function renderLibrary(){
@@ -272,14 +484,34 @@ nav button.on{color:var(--gold)}
     var scr = $("s-"+from);
     state.scroll[from] = scr.scrollTop;
     state.openFrom = from;
-    $("move").innerHTML =
-      '<button class="back" id="back-btn">&lsaquo; Back to '+(from==="workouts"?"workout":"library")+'</button>'
+    var t = TARGETS[id], h = '';
+    h += '<button class="back" id="back-btn">&lsaquo; Back to '+(from==="workouts"?"workout":(from==="muscles"?"muscles":"library"))+'</button>'
       + '<h2>'+esc(m.name)+'</h2>'
       + '<div class="video"><div class="play"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#1C1B17"/></svg></div>Moms &amp; Machines clip</div>'
-      + '<div class="lab">What it works</div><p class="big">'+esc(m.works)+'</p>'
-      + '<div class="lab">The one cue</div>'+ph("Phillip writes this cue (one line)")
+      + '<div class="lab">What it works</div><p class="big">'+esc(m.works)+'</p>';
+    if(t){
+      var clsOf = function(mid){ return t.main.indexOf(mid)>=0 ? "main" : (t.helps.indexOf(mid)>=0 ? "helps" : "dim"); };
+      h += '<div class="bodymap mini"><figure><figcaption>Front</figcaption>'+bodySvg("front",clsOf,false)+'</figure><figure><figcaption>Back</figcaption>'+bodySvg("back",clsOf,false)+'</figure></div>';
+      h += '<div class="legend"><span><i style="background:#DB9928"></i>Does most of the work</span>'
+        + (t.helps.length ? '<span><i style="background:#8a6524"></i>Helps</span>' : '') + '</div>';
+      h += '<div class="chips">';
+      t.main.forEach(function(mid){ h += '<button class="chip main" data-muscle="'+mid+'">'+esc(MUSCLES[mid].name)+'</button>'; });
+      t.helps.forEach(function(mid){ h += '<button class="chip" data-muscle="'+mid+'">'+esc(MUSCLES[mid].name)+'</button>'; });
+      h += '</div>';
+    }
+    h += '<div class="lab">The one cue</div>'+ph("Phillip writes this cue (one line)")
       + (m.url ? '<a class="link" style="margin-top:22px" href="'+IG+m.url+'/" target="_blank" rel="noopener">Watch the full episode on Instagram</a>'
              : '<button class="link" data-link="1" style="margin-top:22px">Watch the full episode on Instagram</button>');
+    var si = slotOf(id);
+    if(si>=0){
+      if(state.workout[si]!==id){
+        h += '<button class="link" data-use="'+id+'" data-slot="'+si+'" data-go="1" style="margin-top:12px">Swap into my workout</button>'
+          + '<p class="note">This replaces '+esc(MOVES[state.workout[si]].name)+'.</p>';
+      } else {
+        h += '<p class="note">This move is in your workout.</p>';
+      }
+    }
+    $("move").innerHTML = h;
     $("move").classList.add("on");
     $("move").scrollTop = 0;
     $("back-btn").addEventListener("click", closeMove);
@@ -293,14 +525,14 @@ nav button.on{color:var(--gold)}
   function showTab(t){
     if($("move").classList.contains("on")) { $("move").classList.remove("on"); state.openFrom=null; }
     state.tab = t;
-    ["workouts","library","basics"].forEach(function(n){ $("s-"+n).classList.toggle("on", n===t); });
+    ["workouts","library","muscles","basics"].forEach(function(n){ $("s-"+n).classList.toggle("on", n===t); });
     Array.prototype.forEach.call(document.querySelectorAll("nav button"), function(b){ b.classList.toggle("on", b.getAttribute("data-tab")===t); });
   }
   var toastTimer;
   function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("on");},1800); }
 
   document.addEventListener("click", function(e){
-    var el = e.target.closest ? e.target.closest("[data-tab],[data-move],[data-mode],[data-link],[data-swap]") : null;
+    var el = e.target.closest ? e.target.closest("[data-tab],[data-move],[data-mode],[data-link],[data-swap],[data-use],[data-reset],[data-muscle],[data-all]") : null;
     if(!el) return;
     if(el.hasAttribute("data-swap")){
       var id = el.getAttribute("data-swap"), pn = $("swap-"+id), on = !pn.classList.contains("on");
@@ -314,9 +546,35 @@ nav button.on{color:var(--gold)}
       renderLibrary(); $("s-library").scrollTop = 0;
     }
     else if(el.hasAttribute("data-link")) toast("Placeholder link: video goes here later");
+    else if(el.hasAttribute("data-use")){
+      var uid = el.getAttribute("data-use"), us = parseInt(el.getAttribute("data-slot"),10);
+      setWorkoutMove(us, uid);
+      if(el.hasAttribute("data-go")) showTab("workouts");
+      toast(MOVES[uid].name+" is in your workout now");
+    }
+    else if(el.hasAttribute("data-reset")){
+      state.workout = DEFAULT_WORKOUT.slice(); saveWorkout(); renderWorkouts();
+      toast("Starting workout restored");
+    }
+    else if(el.hasAttribute("data-all")) setPicking(!state.picking);
+    else if(el.hasAttribute("data-muscle")) pickMuscle(el, false);
+  });
+  function pickMuscle(el, byKey){
+    if(!(state.tab==="muscles" || $("move").classList.contains("on"))) return;
+    var fromMove = $("move").classList.contains("on");
+    state.muscle = el.getAttribute("data-muscle");
+    showTab("muscles");
+    updateMuscle();
+    if(fromMove) setPicking(false);
+    if(byKey){ var f = $("s-muscles").querySelector(".m.sel.tap[tabindex]"); if(f && f.focus) f.focus(); }
+  }
+  document.addEventListener("keydown", function(e){
+    var t = e.target;
+    if(!t || !t.getAttribute || !t.hasAttribute("data-muscle") || t.tagName==="BUTTON") return;
+    if(e.key==="Enter" || e.key===" " || e.key==="Spacebar"){ e.preventDefault(); pickMuscle(t, true); }
   });
 
-  renderWorkouts(); renderLibrary(); renderBasics();
+  renderWorkouts(); renderLibrary(); renderMuscles(); renderBasics();
 })();
 </script>
 </body>
