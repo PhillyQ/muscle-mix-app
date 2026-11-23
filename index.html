@@ -22,7 +22,8 @@ h2{font-size:24px;color:var(--gold);margin:0 0 14px;line-height:1.2}
 .section-label{font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 14px}
 p{font-size:18px;line-height:1.45;margin:0 0 12px}
 .rule{background:var(--panel);border:1px solid var(--gold-d);border-radius:14px;padding:14px 16px;margin-bottom:18px}
-.rule .rx{font-size:30px;font-weight:800;line-height:1.1;color:var(--gold);margin:0 0 8px}
+.rule .asklink{padding:6px 0 4px;font-size:17px}
+.rule .rx{font-size:26px;font-weight:800;line-height:1.1;color:var(--gold);margin:0 0 8px}
 .rule p{margin:0 0 8px}
 .ph{border:2px dashed rgba(205,199,184,.5);border-radius:10px;padding:10px 12px;color:#CDC7B8;background:rgba(219,153,40,.07);font-size:15px;line-height:1.35;font-style:italic}
 .row{display:flex;gap:14px;align-items:center;width:100%;min-height:92px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px;color:var(--text);font:inherit;cursor:pointer}
@@ -370,7 +371,7 @@ nav button.on{color:var(--gold)}
   var AREAS = ["Legs","Push","Pull","Core"];
   var BASICS = [
     {q:"How many days a week should I lift?",a:"When you are starting out, the goal is the habit. Get in there twice a week and give each muscle three hard sets."},
-    {q:"What is a hard set?",a:"A hard set is one where the last few reps slow down and feel hard. Those last reps are what count."},
+    {id:"hard",q:"What is a hard set?",a:"A hard set is one where the last few reps slow down and feel hard. Those last reps are what count."},
     {q:"How many reps should I do?",a:"You have a lot of freedom, as long as the last few reps are hard. For most people, keeping sets to fifteen reps or fewer works well."},
     {q:"How do I know when to stop for the day?",a:"If a weight you usually handle suddenly feels like a battle, you have likely run out of quality sets. Pack it up, rest, and come back in a couple of days."},
     {q:"Should I wait and start next Monday?",a:"Your muscles do not care what day it is. If starting on a Monday helps the habit stick, that can be worth it, but every day you wait is sets you do not get."},
@@ -398,7 +399,7 @@ nav button.on{color:var(--gold)}
   function renderWorkouts(){
     var h = '<h2>Your starting workout</h2>';
     h += '<p>This is where we recommend you start. If you prefer a different move, tap Swap and trade it in.</p>';
-    h += '<div class="rule"><p class="rx">3 x 8-12</p><p>That is 3 sets of 8 to 12 reps on every move.</p><p>Keep every set under 15 reps, and make the last few reps hard.</p><p>Do this same workout twice a week.</p></div>';
+    h += '<div class="rule"><p class="rx">3 sets of 8 to 12 reps</p><p>Twice a week.</p><p>Make your sets hard.</p><button class="asklink" data-hard="1">What is a hard set?</button></div>';
     state.workout.forEach(function(id,i){
       var m = MOVES[id];
       var hasSwap = SLOTS[i].length>1;
@@ -497,7 +498,7 @@ nav button.on{color:var(--gold)}
     if(QUESTION_FORM_ID) h += '<div class="q"><h3>Ask us a question</h3><p>Send us your question. Phillip or Mitchell will email you back.</p><button class="link" data-ask="1">Ask us a question</button></div>';
     BASICS.forEach(function(b){
       if(!b.a) return;
-      h += '<div class="q"><h3>'+esc(b.q)+'</h3>';
+      h += '<div class="q"'+(b.id?' id="basics-'+b.id+'"':'')+'><h3>'+esc(b.q)+'</h3>';
       h += '<p>'+esc(b.a)+'</p></div>';
     });
     h += '<div class="q"><h3>Put this on your home screen</h3>'+hsBlock()+'</div>';
@@ -685,6 +686,12 @@ nav button.on{color:var(--gold)}
   document.addEventListener("click", function(e){
     var el = e.target.closest ? e.target.closest("[data-ask]") : null;
     if(el){ showQuestion(); }
+    var hd = e.target.closest ? e.target.closest("[data-hard]") : null;
+    if(hd){
+      showTab("basics");
+      var card = $("basics-hard");
+      if(card) $("s-basics").scrollTop = Math.max(0, card.offsetTop - 12);
+    }
   });
   // Show the steps once, on first open, unless the app is already on the home screen.
   (function(){
