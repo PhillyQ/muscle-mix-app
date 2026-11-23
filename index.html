@@ -397,7 +397,7 @@ nav button.on{color:var(--gold)}
   function renderWorkouts(){
     var h = '<h2>Your starting workout</h2>';
     h += '<p>This is where we recommend you start. If you prefer a different move, tap Swap and trade it in.</p>';
-    h += '<div class="rule"><p>Do three sets of each move, eight to twelve reps a set. The last few reps should be hard.</p><p>Do this same workout twice a week.</p></div>';
+    h += '<div class="rule"><p>Do three sets of each move. Eight to twelve reps a set is the guide, and stay under fifteen. The last few reps should be hard.</p><p>Do this same workout twice a week.</p></div>';
     state.workout.forEach(function(id,i){
       var m = MOVES[id];
       var hasSwap = SLOTS[i].length>1;
