@@ -6,6 +6,7 @@
 <title>Muscle Mix</title>
 <link rel="apple-touch-icon" href="muscle-mix-icon-180.png">
 <meta name="apple-mobile-web-app-title" content="Muscle Mix">
+<meta name="mm-version" content="2026-11-23-1">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#1C1B17;--panel:#26251f;--line:#3a382f;--gold:#DB9928;--gold-d:rgba(219,153,40,.55);--text:#FAF7F0;--mute:#CDC7B8}
@@ -230,6 +231,27 @@ nav button.on{color:var(--gold)}
   // Question box switch. Leave empty and the question card and link are hidden.
   var QUESTION_FORM_ID = "KpVGlA";
   var HS_KEY = "mm_homescreen_seen";
+  /* Update check: on open and each time the app comes back to the front, ask the server for the newest copy (never the saved one). If its version differs, load it once. */
+  var VER_KEY = "mm_reloaded_for", checking = false;
+  function runVersion(){ var m = document.querySelector('meta[name="mm-version"]'); return m ? m.getAttribute("content") : ""; }
+  function checkForUpdate(){
+    if(checking || (navigator.onLine === false)) return;
+    checking = true;
+    var url = location.href.split("#")[0].split("?")[0];
+    fetch(url + "?mmcheck=" + Date.now(), { cache: "no-store" }).then(function(r){ return r.ok ? r.text() : ""; }).then(function(t){
+      var m = t.match(/<meta name="mm-version" content="([^"]*)"/);
+      if(!m || m[1] === runVersion()) { checking = false; return; }
+      var done = ""; try{ done = sessionStorage.getItem(VER_KEY) || ""; }catch(err){}
+      if(done === m[1]) { checking = false; return; }
+      try{ sessionStorage.setItem(VER_KEY, m[1]); }catch(err){}
+      /* refresh the saved copy of the page itself, then reload */
+      return fetch(url, { cache: "reload" }).catch(function(){}).then(function(){ location.reload(); });
+    }).catch(function(){ checking = false; });
+  }
+  checkForUpdate();
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") checkForUpdate(); });
+  window.addEventListener("pageshow", function(e){ if(e.persisted) checkForUpdate(); });
+
   var MOVES = {
     "leg-press":{name:"Leg Press",area:"Legs",set:"gym",works:"The big muscles in the front of your thighs, and your buttocks.",url:"I6lBMPtVKX8"},
     "leg-extension":{name:"Leg Extension",area:"Legs",set:"gym",works:"The muscles on the front of your thighs.",url:"S6FkAmZWXR8"},
@@ -372,7 +394,7 @@ nav button.on{color:var(--gold)}
   var BASICS = [
     {q:"How many days a week should I lift?",a:"When you are starting out, the goal is the habit. Get in there twice a week and give each muscle 3 hard sets."},
     {id:"hard",q:"What is a hard set?",a:"A hard set is one where the last few reps slow down and feel hard. Those last reps are what count."},
-    {q:"How many reps should I do?",a:"You have a lot of freedom, as long as the last few reps are hard. For most people, keeping sets to 15 reps or fewer works well."},
+    {q:"How many reps should I do?",a:"You have a lot of freedom, as long as the last few reps are hard. For most people, keeping sets to under 15 reps works well."},
     {q:"How do I know when to stop for the day?",a:"If a weight you usually handle suddenly feels like a battle, you have likely run out of quality sets. Pack it up, rest, and come back in a couple of days."},
     {q:"Should I wait and start next Monday?",a:"Your muscles do not care what day it is. If starting on a Monday helps the habit stick, that can be worth it, but every day you wait is sets you do not get."},
     {q:"Why am I sore, and what should I do about it?",a:null}
