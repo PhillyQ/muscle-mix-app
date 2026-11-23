@@ -62,9 +62,15 @@ p{font-size:18px;line-height:1.45;margin:0 0 12px}
 .ytbox{position:relative;width:min(100%,300px);aspect-ratio:9/16;margin:0 auto;background:#000;border:1px solid #333;border-radius:14px;overflow:hidden}
 .ytbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .ytlink{display:inline-block;margin-top:10px;font-size:15px;color:var(--gold);text-decoration:underline}
-#gate{position:absolute;inset:0;z-index:30;background:var(--bg);overflow-y:auto;padding:20px}
-#gate iframe{display:block;width:100%;height:340px;border:0;background:transparent}
-#app.gated nav{display:none}
+#overlay{position:absolute;inset:0;z-index:30;background:var(--bg);overflow-y:auto;padding:16px 20px 28px;display:none}
+#overlay.on{display:block}
+#overlay iframe{display:block;width:100%;height:520px;border:0;background:transparent}
+.hs-icon{display:block;width:84px;height:84px;border-radius:18px;margin:4px 0 14px}
+.steps{margin:0 0 14px;padding-left:26px}
+.steps li{margin:0 0 10px;font-size:18px;line-height:1.4}
+.hs h4{margin:14px 0 8px;font-size:17px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)}
+.askline{margin:22px 0 6px;text-align:center}
+.asklink{background:none;border:0;color:var(--gold);font:inherit;font-size:16px;text-decoration:underline;padding:12px;cursor:pointer}
 .lab{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:18px 0 6px}
 .big{font-size:21px;line-height:1.4;margin:0}
 nav{flex:none;display:flex;border-top:1px solid var(--line);background:#0f0f0f;padding-bottom:env(safe-area-inset-bottom)}
@@ -214,12 +220,14 @@ nav button.on{color:var(--gold)}
     <button data-tab="muscles"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.5"/><path d="M12 7v7M7 9.5h10M12 14l-3.5 7M12 14l3.5 7"/></svg>MUSCLES</button>
     <button data-tab="basics"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>BASICS</button>
   </nav>
+  <div id="overlay"></div>
   <div id="toast"></div>
 </div>
 <script>
 (function(){
-  // Email screen switch. Leave empty and the app has no email screen. Paste a Tally form ID to turn it on.
-  var TALLY_FORM_ID = "";
+  // Question box switch. Leave empty and the question card and link are hidden.
+  var QUESTION_FORM_ID = "KpVGlA";
+  var HS_KEY = "mm_homescreen_seen";
   var MOVES = {
     "leg-press":{name:"Leg Press",area:"Legs",set:"gym",works:"The big muscles in the front of your thighs, and your buttocks.",url:"I6lBMPtVKX8"},
     "leg-extension":{name:"Leg Extension",area:"Legs",set:"gym",works:"The muscles on the front of your thighs.",url:"S6FkAmZWXR8"},
@@ -412,6 +420,7 @@ nav button.on{color:var(--gold)}
     MORE.forEach(function(id){ if(state.workout.indexOf(id)<0) h += moveRow(id,"workouts"); });
     h += '</div>';
     if(!sameAsDefault()) h += '<button class="link" data-reset="1">Back to the starting workout</button>';
+    if(QUESTION_FORM_ID) h += '<div class="askline"><button class="asklink" data-ask="1">Have a question? Ask us</button></div>';
     $("s-workouts").innerHTML = h;
   }
 
@@ -481,11 +490,13 @@ nav button.on{color:var(--gold)}
 
   function renderBasics(){
     var h = '<h2>The basics</h2>';
+    if(QUESTION_FORM_ID) h += '<div class="q"><h3>Ask us a question</h3><p>Send us your question and the Muscle Mix team will read it.</p><button class="link" data-ask="1">Ask us a question</button></div>';
     BASICS.forEach(function(b){
       if(!b.a) return;
       h += '<div class="q"><h3>'+esc(b.q)+'</h3>';
       h += '<p>'+esc(b.a)+'</p></div>';
     });
+    h += '<div class="q"><h3>Put this on your home screen</h3>'+hsBlock()+'</div>';
     $("s-basics").innerHTML = h;
   }
 
@@ -582,32 +593,56 @@ nav button.on{color:var(--gold)}
 
   renderWorkouts(); renderLibrary(); renderMuscles(); renderBasics();
 
-  // Email screen. Does nothing while TALLY_FORM_ID is empty.
+  // Overlay: used for the home screen steps and the question form.
+  function isStandalone(){
+    try{ if(window.navigator.standalone===true) return true; }catch(err){}
+    try{ if(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true; }catch(err){}
+    return false;
+  }
+  function platform(){
+    var ua = navigator.userAgent || "";
+    if(/iPhone|iPad|iPod/.test(ua) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1)) return "ios";
+    if(/Android/.test(ua)) return "android";
+    return "other";
+  }
+  function stepsHtml(){
+    var ios = '<h4>iPhone</h4><ol class="steps">'
+      + '<li>Open this page in Safari.</li>'
+      + '<li>Tap the Share button. It is the square with an arrow pointing up, at the bottom of the screen.</li>'
+      + '<li>Scroll down and tap Add to Home Screen.</li>'
+      + '<li>Tap Add, in the top right corner.</li></ol>';
+    var and = '<h4>Android</h4><ol class="steps">'
+      + '<li>Open this page in Chrome.</li>'
+      + '<li>Tap the three dots in the top right corner.</li>'
+      + '<li>Tap Add to Home screen, or Install app.</li>'
+      + '<li>Tap Add, or Install.</li></ol>';
+    var p = platform();
+    return p==="ios" ? ios : (p==="android" ? and : ios+and);
+  }
+  function hsBlock(){
+    return '<div class="hs"><img class="hs-icon" src="muscle-mix-icon-180.png" alt="">'
+      + '<p>Then you can open the app with one tap, like any other app on your phone.</p>'+stepsHtml()+'</div>';
+  }
+  function openOverlay(html){ var o=$("overlay"); o.innerHTML=html; o.classList.add("on"); o.scrollTop=0; }
+  function closeOverlay(){ var o=$("overlay"); o.classList.remove("on"); o.innerHTML=""; }
+  function showHomeScreen(){
+    openOverlay('<h2>Put this on your home screen</h2>'+hsBlock()+'<button class="link" id="ov-close">Got it</button>');
+    $("ov-close").addEventListener("click", function(){ try{ localStorage.setItem(HS_KEY,"1"); }catch(err){} closeOverlay(); });
+  }
+  function showQuestion(){
+    openOverlay('<button class="back" id="ov-back">&lsaquo; Back</button><h2>Ask us a question</h2>'
+      + '<iframe src="https://tally.so/embed/'+encodeURIComponent(QUESTION_FORM_ID)+'?transparentBackground=1&hideTitle=1" title="Ask us a question"></iframe>');
+    $("ov-back").addEventListener("click", closeOverlay);
+  }
+  document.addEventListener("click", function(e){
+    var el = e.target.closest ? e.target.closest("[data-ask]") : null;
+    if(el){ showQuestion(); }
+  });
+  // Show the steps once, on first open, unless the app is already on the home screen.
   (function(){
-    if(!TALLY_FORM_ID) return;
-    var KEY = "mm_email_screen_done";
-    try{ if(localStorage.getItem(KEY)) return; }catch(err){}
-    var gate = document.createElement("div");
-    gate.id = "gate";
-    gate.innerHTML = '<h2>Get the app sent to you</h2><p>Enter your email and we will send you the link and how to add it to your home screen.</p>'
-      + '<iframe src="https://tally.so/embed/'+encodeURIComponent(TALLY_FORM_ID)+'?transparentBackground=1&hideTitle=1" title="Email form"></iframe>'
-      + '<button class="link" id="gate-skip">Skip for now</button>';
-    $("app").appendChild(gate);
-    $("app").classList.add("gated");
-    function finish(){
-      try{ localStorage.setItem(KEY, "1"); }catch(err){}
-      window.removeEventListener("message", onMsg);
-      if(gate.parentNode) gate.parentNode.removeChild(gate);
-      $("app").classList.remove("gated");
-    }
-    function onMsg(e){
-      if(e.origin !== "https://tally.so") return;
-      var d = e.data;
-      if(typeof d === "string"){ try{ d = JSON.parse(d); }catch(err){ d = null; } }
-      if(d && d.event === "Tally.FormSubmitted") finish();
-    }
-    window.addEventListener("message", onMsg);
-    $("gate-skip").addEventListener("click", finish);
+    if(isStandalone()) return;
+    try{ if(localStorage.getItem(HS_KEY)) return; }catch(err){}
+    showHomeScreen();
   })();
 })();
 </script>
