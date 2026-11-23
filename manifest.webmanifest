@@ -1,0 +1,13 @@
+{
+  "name": "Muscle Mix",
+  "short_name": "Muscle Mix",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1C1B17",
+  "theme_color": "#1C1B17",
+  "icons": [
+    { "src": "muscle-mix-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "muscle-mix-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
