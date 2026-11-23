@@ -22,6 +22,7 @@ h2{font-size:24px;color:var(--gold);margin:0 0 14px;line-height:1.2}
 .section-label{font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 14px}
 p{font-size:18px;line-height:1.45;margin:0 0 12px}
 .rule{background:var(--panel);border:1px solid var(--gold-d);border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.rule .rx{font-size:30px;font-weight:800;line-height:1.1;color:var(--gold);margin:0 0 8px}
 .rule p{margin:0 0 8px}
 .ph{border:2px dashed rgba(205,199,184,.5);border-radius:10px;padding:10px 12px;color:#CDC7B8;background:rgba(219,153,40,.07);font-size:15px;line-height:1.35;font-style:italic}
 .row{display:flex;gap:14px;align-items:center;width:100%;min-height:92px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px;color:var(--text);font:inherit;cursor:pointer}
@@ -397,7 +398,7 @@ nav button.on{color:var(--gold)}
   function renderWorkouts(){
     var h = '<h2>Your starting workout</h2>';
     h += '<p>This is where we recommend you start. If you prefer a different move, tap Swap and trade it in.</p>';
-    h += '<div class="rule"><p>Do three sets of each move. Aim for eight to twelve reps a set, and stay under fifteen. The last few reps should be hard.</p><p>Do this same workout twice a week.</p></div>';
+    h += '<div class="rule"><p class="rx">3 x 8-12</p><p>That is 3 sets of 8 to 12 reps on every move.</p><p>Keep every set under 15 reps, and make the last few reps hard.</p><p>Do this same workout twice a week.</p></div>';
     state.workout.forEach(function(id,i){
       var m = MOVES[id];
       var hasSwap = SLOTS[i].length>1;
@@ -458,7 +459,10 @@ nav button.on{color:var(--gold)}
   }
   // "All muscles" swaps the space under the figures between the list of names and the selected muscle's details.
   function setPicking(on){
+    var was = !!state.picking;
     state.picking = !!on;
+    if(!was && state.picking) pushLayer();
+    if(was && !state.picking) popLayer();
     var scr = $("s-muscles"), btn = $("all-btn");
     scr.classList.toggle("picking", state.picking);
     $("muscle-all").hidden = !state.picking;
@@ -500,6 +504,48 @@ nav button.on{color:var(--gold)}
     $("s-basics").innerHTML = h;
   }
 
+  // Back gesture: every layer you can open (a move page, the question box, the home screen steps,
+  // the All muscles list) can be closed by swiping in from the left edge or by the phone's back button.
+  var hist = 0, ignorePop = 0, fromPop = false;
+  function pushLayer(){ try{ history.pushState({mm:1}, ""); hist++; }catch(err){} }
+  function popLayer(){
+    if(fromPop || hist < 1) return;
+    hist--; ignorePop++;
+    try{ history.back(); }catch(err){ ignorePop--; }
+  }
+  function goBack(){
+    if($("overlay").classList.contains("on")){
+      if($("ov-close")){ try{ localStorage.setItem(HS_KEY,"1"); }catch(err){} }
+      closeOverlay(); return true;
+    }
+    if($("move").classList.contains("on")){ closeMove(); return true; }
+    if(state.picking && state.tab==="muscles"){ setPicking(false); return true; }
+    return false;
+  }
+  window.addEventListener("popstate", function(){
+    if(ignorePop > 0){ ignorePop--; return; }
+    if(hist > 0) hist--;
+    fromPop = true;
+    try{ goBack(); }finally{ fromPop = false; }
+  });
+  (function(){
+    var sx = 0, sy = 0, st = 0, edge = false;
+    document.addEventListener("touchstart", function(e){
+      var t = e.touches && e.touches[0];
+      edge = !!t && e.touches.length === 1 && t.clientX <= 24;
+      if(edge){ sx = t.clientX; sy = t.clientY; st = Date.now(); }
+    }, {passive:true});
+    document.addEventListener("touchend", function(e){
+      if(!edge) return; edge = false;
+      var t = e.changedTouches && e.changedTouches[0]; if(!t) return;
+      var dx = t.clientX - sx, dy = Math.abs(t.clientY - sy);
+      if(dx >= 70 && dy <= dx * 0.6 && Date.now() - st < 800){
+        fromPop = true;
+        try{ goBack(); }finally{ fromPop = false; }
+      }
+    }, {passive:true});
+  })();
+
   function openMove(id, from){
     var m = MOVES[id]; if(!m) return;
     var scr = $("s-"+from);
@@ -530,18 +576,20 @@ nav button.on{color:var(--gold)}
       }
     }
     $("move").innerHTML = h;
+    if(!$("move").classList.contains("on")) pushLayer();
     $("move").classList.add("on");
     $("move").scrollTop = 0;
     $("back-btn").addEventListener("click", closeMove);
   }
   function closeMove(){
+    if($("move").classList.contains("on")) popLayer();
     $("move").classList.remove("on"); $("move").innerHTML = "";
     var from = state.openFrom;
     if(from){ $("s-"+from).scrollTop = state.scroll[from] || 0; }
     state.openFrom = null;
   }
   function showTab(t){
-    if($("move").classList.contains("on")) { $("move").classList.remove("on"); $("move").innerHTML = ""; state.openFrom=null; }
+    if($("move").classList.contains("on")) { popLayer(); $("move").classList.remove("on"); $("move").innerHTML = ""; state.openFrom=null; }
     state.tab = t;
     ["workouts","library","muscles","basics"].forEach(function(n){ $("s-"+n).classList.toggle("on", n===t); });
     Array.prototype.forEach.call(document.querySelectorAll("nav button"), function(b){ b.classList.toggle("on", b.getAttribute("data-tab")===t); });
@@ -623,8 +671,8 @@ nav button.on{color:var(--gold)}
     return '<div class="hs"><img class="hs-icon" src="muscle-mix-icon-180.png" alt="">'
       + '<p>Then you can open the app with one tap, like any other app on your phone.</p>'+stepsHtml()+'</div>';
   }
-  function openOverlay(html){ var o=$("overlay"); o.innerHTML=html; o.classList.add("on"); o.scrollTop=0; }
-  function closeOverlay(){ var o=$("overlay"); o.classList.remove("on"); o.innerHTML=""; }
+  function openOverlay(html){ var o=$("overlay"); if(!o.classList.contains("on")) pushLayer(); o.innerHTML=html; o.classList.add("on"); o.scrollTop=0; }
+  function closeOverlay(){ var o=$("overlay"); if(o.classList.contains("on")) popLayer(); o.classList.remove("on"); o.innerHTML=""; }
   function showHomeScreen(){
     openOverlay('<h2>Put this on your home screen</h2>'+hsBlock()+'<button class="link" id="ov-close">Got it</button>');
     $("ov-close").addEventListener("click", function(){ try{ localStorage.setItem(HS_KEY,"1"); }catch(err){} closeOverlay(); });
