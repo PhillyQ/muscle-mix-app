@@ -397,7 +397,7 @@ nav button.on{color:var(--gold)}
   function renderWorkouts(){
     var h = '<h2>Your starting workout</h2>';
     h += '<p>This is where we recommend you start. If you prefer a different move, tap Swap and trade it in.</p>';
-    h += '<div class="rule"><p>Do three sets of each move. Eight to twelve reps a set is the guide, and stay under fifteen. The last few reps should be hard.</p><p>Do this same workout twice a week.</p></div>';
+    h += '<div class="rule"><p>Do three sets of each move. Aim for eight to twelve reps a set, and stay under fifteen. The last few reps should be hard.</p><p>Do this same workout twice a week.</p></div>';
     state.workout.forEach(function(id,i){
       var m = MOVES[id];
       var hasSwap = SLOTS[i].length>1;
@@ -490,7 +490,7 @@ nav button.on{color:var(--gold)}
 
   function renderBasics(){
     var h = '<h2>The basics</h2>';
-    if(QUESTION_FORM_ID) h += '<div class="q"><h3>Ask us a question</h3><p>Send us your question and the Muscle Mix team will read it.</p><button class="link" data-ask="1">Ask us a question</button></div>';
+    if(QUESTION_FORM_ID) h += '<div class="q"><h3>Ask us a question</h3><p>Send us your question. Phillip or Mitchell will email you back.</p><button class="link" data-ask="1">Ask us a question</button></div>';
     BASICS.forEach(function(b){
       if(!b.a) return;
       h += '<div class="q"><h3>'+esc(b.q)+'</h3>';
